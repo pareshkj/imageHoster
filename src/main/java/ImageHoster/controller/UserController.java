@@ -40,9 +40,24 @@ public class UserController {
     //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/login";
+    public String registerUser(User user,Model model) {
+        //There is if condition which checks the password strength calling the function passwordStrength which is defined below.
+        //If the condition is satisfied then it will proceed to register the user and return the login screen.
+        //Else an error message is thrown as required and necessary changes in registration.html is also made.
+        if(passwordStrength(user.getPassword())){
+            userService.registerUser(user);
+            return "redirect:/users/login";
+        }else{
+            User user1 = new User();
+            UserProfile profile = new UserProfile();
+            user1.setProfile(profile);
+            String error = "Password must contain at least 1 alphabet, 1 number & 1 special character";
+            model.addAttribute("User", user1);
+            model.addAttribute("passwordTypeError",error);
+            return "users/registration";
+        }
+
+
     }
 
     //This controller method is called when the request pattern is of type 'users/login'
@@ -78,5 +93,35 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    private boolean passwordStrength(String password){
+        Boolean lowerCase = false;
+        Boolean upperCase = false;
+        Boolean number = false;
+        Boolean specialCharacter = false;
+
+        if(password.matches("(?=.*[0-9]).*")){
+            number = true;
+        }
+
+        if(password.matches("(?=.*[a-z]).*")){
+            lowerCase = true;
+        }
+        if(password.matches("(?=.*[A-Z]).*")){
+            upperCase = true;
+        }
+        if(password.matches("(?=.*[~!@#$%^&*()_-{}`+=,.<>/?';:]).*")){
+            specialCharacter = true;
+        }
+
+        if(lowerCase || upperCase){
+            if(specialCharacter){
+                return true;
+            }
+        }else{
+            return false;
+        }
+        return false;
     }
 }

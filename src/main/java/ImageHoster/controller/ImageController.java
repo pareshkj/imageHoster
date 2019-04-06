@@ -35,6 +35,8 @@ public class ImageController {
         return "images";
     }
 
+
+    //OLD COMMENT
     //This method is called when the details of the specific image with corresponding title are to be displayed
     //The logic is to get the image from the databse with corresponding title. After getting the image from the database the details are shown
     //First receive the dynamic parameter in the incoming request URL in a string variable 'title' and also the Model type object
@@ -45,9 +47,18 @@ public class ImageController {
     //Also now you need to add the tags of an image in the Model type object
     //Here a list of tags is added in the Model type object
     //this list is then sent to 'images/image.html' file and the tags are displayed
-    @RequestMapping("/images/{title}")
-    public String showImage(@PathVariable("title") String title, Model model) {
-        Image image = imageService.getImageByTitle(title);
+
+
+
+    //NEW CHANGES
+    /*
+        As the method in the ImageRepository is changed to fetch the image by using its image ID as the unique identifier,Further changes are made
+        below to the controlller below to pass the imageID to the imageServices and get the image using the imageID instead of Title.
+
+     */
+    @RequestMapping("/images/{imageId}/{title}")
+    public String showImage(@PathVariable("imageId") Integer imageId, Model model) {
+        Image image = imageService.getImageByImageId(imageId);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
         return "images/image";

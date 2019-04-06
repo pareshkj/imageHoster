@@ -25,10 +25,17 @@ public class ImageService {
         imageRepository.uploadImage(image);
     }
 
-
+    //OLD COMMENT
     //The method calls the getImageByTitle() method in the Repository and passes the title of the image to be fetched
-    public Image getImageByTitle(String title) {
-        return imageRepository.getImageByTitle(title);
+
+    //NEW CHANGES
+    /*
+        Now this method takes the imageID from the imageController and passes it to imageRepository to fetch the image using the ImageID as the
+        unique identifier.
+
+     */
+    public Image getImageByImageId(Integer imageId) {
+        return imageRepository.getImageByImageID(imageId);
     }
 
     //The method calls the getImage() method in the Repository and passes the id of the image to be fetched

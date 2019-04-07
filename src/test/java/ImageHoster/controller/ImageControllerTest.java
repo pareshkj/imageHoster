@@ -1,4 +1,4 @@
-/*
+
 package ImageHoster.controller;
 
 import ImageHoster.model.Image;
@@ -7,6 +7,7 @@ import ImageHoster.model.User;
 import ImageHoster.model.UserProfile;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
+import ImageHoster.service.CommentService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -36,6 +37,9 @@ public class ImageControllerTest {
 
     @MockBean
     private ImageService imageService;
+
+    @MockBean
+    private CommentService commentService;
 
     @MockBean
     private TagService tagService;
@@ -225,6 +229,14 @@ public class ImageControllerTest {
         image.setDescription("This image is for testing purpose");
         image.setUser(user1);
 
+        Tag tag = new Tag();
+        tag.setId(1);
+        tag.setName("dog");
+
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        image.setTags(tags);
+
 
         Mockito.when(imageService.getImage(Mockito.anyInt())).thenReturn(image);
 
@@ -310,4 +322,4 @@ public class ImageControllerTest {
     }
 }
 
-*/
+

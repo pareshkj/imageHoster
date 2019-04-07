@@ -46,12 +46,12 @@ public class UserController {
         //Else an error message is thrown as required and necessary changes in registration.html is also made.
         if(passwordStrength(user.getPassword())){
             userService.registerUser(user);
-            return "redirect:/users/login";
+            return "users/login";
         }else{
             User user1 = new User();
             UserProfile profile = new UserProfile();
             user1.setProfile(profile);
-            String error = "Password must contain at least 1 alphabet, 1 number & 1 special character";
+            String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
             model.addAttribute("User", user1);
             model.addAttribute("passwordTypeError",error);
             return "users/registration";
@@ -116,7 +116,7 @@ public class UserController {
         }
 
         if(lowerCase || upperCase){
-            if(specialCharacter){
+            if(specialCharacter && number){
                 return true;
             }
         }else{

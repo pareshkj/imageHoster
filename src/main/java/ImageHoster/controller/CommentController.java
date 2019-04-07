@@ -6,6 +6,7 @@ import ImageHoster.model.Image;
 import ImageHoster.model.User;
 import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
+import java.lang.Integer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,7 @@ public class CommentController {
         newComment.setUser(user);
         newComment.setDate(new Date());
 
-        Image image =imageService.getImageByImageId(imageId);
+        Image image =imageService.getImage(imageId);
         newComment.setImages(image);
         newComment.setText(text);
         commentService.createComment(newComment);

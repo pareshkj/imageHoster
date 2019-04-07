@@ -1,8 +1,10 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class ImageController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private CommentService commentService;
 
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
@@ -59,8 +64,14 @@ public class ImageController {
     @RequestMapping("/images/{imageId}/{title}")
     public String showImage(@PathVariable("imageId") Integer imageId, Model model) {
         Image image = imageService.getImageByImageId(imageId);
+
+        //Calls the comment Service to get all the comments related to an image & return a list.
+        List <Comment> comments = commentService.getCommentsByImageId(imageId);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+
+        //Comment list is added to the model so that it is displayed in the images.html. Here the key is "comments"
+        model.addAttribute("comments",comments);
         return "images/image";
     }
 
@@ -116,6 +127,9 @@ public class ImageController {
         //error Message to be printed is initialised in error.
         String error = "Only the owner of the image can edit the image";
 
+        //Calls the comment Service to get all the comments related to an image & return a list.
+        List <Comment> comments = commentService.getCommentsByImageId(imageId);
+
         //If condition to check whether the logged user is same as the user who uploaded the image.
         // correspondingly the pages are shown.
         if(imageUser.getId() == loggeduser.getId() ) {
@@ -125,6 +139,9 @@ public class ImageController {
         }else {
             model.addAttribute("image",image);
             model.addAttribute("tags",image.getTags());
+
+            //Comment list is added to the model so that it is displayed in the images.html. Here the key is "comments"
+            model.addAttribute("comments",comments);
             model.addAttribute("editError", error);
             return "images/image";
         }
@@ -162,7 +179,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" +updatedImage.getId()+"/"+ updatedImage.getTitle();
     }
 
 
@@ -181,6 +198,9 @@ public class ImageController {
         User loggedUser = (User) session.getAttribute("loggeduser");
         User imageUser = image.getUser();
 
+        //Calls the comment Service to get all the comments related to an image & return a list.
+        List <Comment> comments = commentService.getCommentsByImageId(imageId);
+
 
         //If condition to check whether the logged user is same as the user who uploaded the image.
         // correspondingly the image is deleted if the logged in user has uploaded the image.
@@ -191,6 +211,9 @@ public class ImageController {
             model.addAttribute("deleteError",error);
             model.addAttribute("image",image);
             model.addAttribute("tags",image.getTags());
+
+            //Comment list is added to the model so that it is displayed in the images.html. Here the key is "comments"
+            model.addAttribute("comments",comments);
             return "images/image";
         }
     }
@@ -237,4 +260,5 @@ public class ImageController {
 
         return tagString.toString();
     }
+
 }
